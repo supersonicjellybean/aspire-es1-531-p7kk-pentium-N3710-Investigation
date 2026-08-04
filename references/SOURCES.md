@@ -1,4 +1,5 @@
-## This document is a catalogue of tools and references used in this project
+# This document is a catalogue of tools and references used in this project
+## Note that each bullet corresponds to each hypothesis; should two or more tools and/or references be used for one hypothesis, it will be explicitly stated
 
 1) [Database] CPU-Z Validator [https://valid.x86.fr/]:
  - Used to compare reported BCLK values against multiple devices containing the same processor
