@@ -1,1 +1,1 @@
-# aspire-es1-531-p7kk-pentium-N3710-Investigation
+This project is an attempt to diagnose an Intel Pentium N3710 laptop that appears to be arbitrarily locked to ~0.48 GHz (occasionally spiking to 0.50 GHz) using a systematic and scientific approach, and to publicly document the findings in case they prove useful to others experiencing the same issue.
