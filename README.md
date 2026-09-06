@@ -194,7 +194,7 @@ The image is rather grainy, but it is clear enough for a preliminary statement: 
 
 ![](assets/Untitled.png)
 <div align="center">Image 5E: Left: Macro shot of R1809, R1860 and surrounding area Middle: Closeup of R1809, R1860 and surrounding area in boardview Right: Elevated view of R1809, R1860 and surrounding area.</div>
-For the lack of a better term, both R1809 and R1860 have disintegrated. Crusty copper oxide surrounds the resistor, and blackened pads are visible. **This explains the erroneous assertion of PROCHOT#.**
+For the lack of a better term, both R1809 and R1860 have disintegrated. Crusty copper oxide surrounds the resistor, and blackened pads are visible. This strongly implicates the erroneous assertion of PROCHOT#.
 
 The observations made in Hypothesis 2 might be attributed to improper contacts for each resistor. When the CPU is not in C0 power state, it occasionally boosts up due to the oxide having irregular conduction. When the CPU enters C0 and requests higher voltages, the oxide may heat up by marginal amounts and lose what little conductivity it had, forcing the net voltage to drop below the input logic-low threshold (V<sub>IL</sub>), and resulting in a ‘false positive’ PROCHOT# activation. However, this theory is an educated guess given the evidence obtained, and certainly not a confident statement explaining the clock speed ambiguity when in C0 and when not in C0.
 
