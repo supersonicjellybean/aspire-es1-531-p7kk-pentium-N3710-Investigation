@@ -60,13 +60,13 @@ C.​ Under load (stress-ng) (performance governor)
 
 The datasets created were used to plot graphs corresponding to each scenario using matplotlib in a python program. While the program is too long for its source code to be pasted here, it will be available on the project [repo](https://github.com/supersonicjellybean/aspire-es1-531-p7kk-pentium-N3710-Investigation) on github. However, the graphs plotted from the datasets are as pasted below:
 
-![[CPUFreq_Baseline_scatter_900DPI.png]]
+![](CPUFreq_Baseline_scatter_900DPI.png)
 <div align="center">Graph 2A: Frequency-Sample graph under Idle conditions</div>
 
-![[CPUFreq_schedutil_Stress_scatter_900DPI.png]]
+![](CPUFreq_schedutil_Stress_scatter_900DPI.png)
 <div align="center">Graph 2B: Frequency-Sample graph under load (default governor)</div>
 
-![[CPUFreq_Performance_Stress_scatter_900DPI.png]]
+![](CPUFreq_Performance_Stress_scatter_900DPI.png)
 <div align="center">Graph 2C: Frequency-Sample graph under load (performance governor)</div>
 
 In a perfect test, the logger would have taken exactly 5 minutes. However, in real-world use, it took an average of 553.32 seconds, or around 9 minutes and 13 seconds.
@@ -88,14 +88,14 @@ When PROCHOT# is asserted, the processor throttles itself as a safety mechanism 
 
 A few searches showed that tools existed to ‘disable’ BD_PROCHOT entirely, as it was known to cause performance issues much like what I was seeing. Upon installing [ThrottleStop](https://www.techpowerup.com/download/techpowerup-throttlestop/), however, which is a utility well known for changing CPU throttling behavior, I saw that the “BD_PROCHOT” box was greyed out and unchecked.
 
-![[Pasted image 20260906195257.png]]
+![](Pasted%20image%2020260906195257.png)
 <div align="center">Image 3A: ThrottleStop showing greyed out and unchecked “BD_PROCHOT” box</div>
 
 As BD_PROCHOT is a physical safety mechanism, it cannot simply be turned ‘off’. Instead, clearing bit 0 of MSR 0x1FC acts as a logical mask inside the processor, forcing the hardware to ‘ignore’ the BD_PROCHOT signal regardless of the line's physical voltage. Indeed, this is what popular tools like ThrottleStop use to ‘disable’ BD_PROCHOT.
 
 Since ThrottleStop greyed out the BD_PROCHOT box, I used another program designed to read, inspect, and modify almost all computer hardware settings, [RWEVerything](https://rweverything.com/).
 
-![[Screenshot (2).png]]
+![](Screenshot%20(2).png)
 <div align="center">Image 3B: RWEverything window showing results of querying MSR 0x1FC</div>
 
 Querying MSR 0x1FC using RWEverything returned a 64-bit hexadecimal zero (0x0000000000000000) that was greyed out. It was unclear whether the register held an active zero value (PROCHOT# not asserted) or if the program was encountering an error trying to read the register address. After spending nearly a week cross-referencing RWEverything screenshots and forum threads without finding a single documented case on a Braswell chip, a forum reference pointed me to documentation I didn't know existed, the [Intel® 64 and IA-32 Architectures Software Developer Manuals](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html). “Volume 4: Model-Specific Registers” details what registers were available on each processor family and their corresponding microarchitecture (here, the 06_4CH family, on the ‘Airmont’ microarchitecture). Indeed, 0x1FC was not listed in any of the corresponding tables. As such, there is not enough information to confirm or deny if BD_PROCHOT is active.
@@ -126,7 +126,7 @@ Using Intel’s SDM Volume 4, MSRs potentially relevant to throttling, performan
 </div>
 <div align="center">Table 4A: List of shortlisted MSRs (sourced from Intel SDM Vol.4, “MSRs in Intel Atom® Processors Based on Airmont Microarchitecture”)</div>
 
-![[Screenshot (3).png]]
+![](Screenshot%20(3).png)
 <div align="center">Image 4A: RWEverything window showing MSR values
 (Relevant values from Image 4A will be copied over to Table 4B for reference)</div>
 
@@ -174,24 +174,25 @@ Reason 3 directly contradicts itself, with PROCHOT# being asserted, the temperat
 
 Because board schematics and CAD layouts (and by extension, boardview files) for original design manufacturer platforms are proprietary and rarely publicly available, sourcing the exact schematics and layout files for the Wistron Domino BA14285-1 required almost an entire day of relentless searching.
 
-![[SchemaAnnotated.png]]
+![](SchemaAnnotated.png)
 <div align="center">Image 5A: Annotated Schematic page of processor I/O, detailing components relevant to PROCHOT#. R1860 and R1809 are the primary points of failure, since the absence/malfunction of R1809 (0Ω bridge for AD50 pin, which is the pin for PROCHOT#_CPU) or R1860 (20kΩ pull up resistor keeping PROCHOT# at 1.8V, failure to do so would drop the voltage to 0V and set PROCHOT# to “ON”) could easily result in a false positive PROCHOT# assertion.</div>
 
-![[Collated 1.png]]<div align="center">Image 5B: Collated view of motherboard. These pictures were used to orient myself in OpenBoardView and locate R1860 after pinpointing its location in the boardview file.</div>
+![](Collated.png)
+<div align="center">Image 5B: Collated view of motherboard. These pictures were used to orient myself in OpenBoardView and locate R1860 after pinpointing its location in the boardview file.</div>
  
  Using a free tool named [OpenBoardView](), a PDF viewer, and old photos of the motherboard, I oriented myself in the boardview by searching up component names printed on the silkscreen, before looking for R1860 and R1809 in the boardview file. A screen capture of me doing the same is available [here](https://youtu.be/d524AaAN8lI) on YouTube.
 
-![[View.png]]
+![](View.png)
 <div align="center">Image 5C: Location of R1860 (Left: Boardview Macro, Right: Full Boardview)</div>
 
 Zooming in on the ‘front’ portion of Image 5B, we can locate R1860 and R1809 on the physical board:
 
-![[IMG_1322.png]]
+![](IMG_1322.png)
 <div align="center">Image 5D: Zoomed in photo of R1809 and R1860 (first and second resistor in the line of resistors below screw mount) and surrounding area.</div>
 
 The image is rather grainy, but it is clear enough for a preliminary statement: severe corrosion is visible in the area immediately surrounding the screw mount, and R1860 seems to have taken severe damage.
 
-![[Untitled.png]]
+![](Untitled.png)
 <div align="center">Image 5E: Left: Macro shot of R1809, R1860 and surrounding area Middle: Closeup of R1809, R1860 and surrounding area in boardview Right: Elevated view of R1809, R1860 and surrounding area.</div>
 For the lack of a better term, both R1809 and R1860 have disintegrated. Crusty copper oxide surrounds the resistor, and blackened pads are visible. **This explains the erroneous assertion of PROCHOT#.**
 
